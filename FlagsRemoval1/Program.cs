@@ -13,15 +13,15 @@ namespace FlagsRemoval1
             WriteLine("Game start by having {0} flags", totalFlags);
 
             do
-            {
+            {//second commit test
 
                 string input;
                 int pulledFlag;
                 do
                 {
                     WriteLine("Remaining Flags: {0}", totalFlags);
-                    WriteLine("Your turn, enter the number of flag(s) that you willing to pull (1-3 flags only)");
-
+                    WriteLine("Your turn, enter the number of flag(s) that you willing to pull (1-3 flags only).");
+                    //
                     input = Console.ReadLine();
 
 
@@ -74,7 +74,6 @@ namespace FlagsRemoval1
 
         private static int AIPulledFlag(int remainingFlags)
         {
-
             List<int> WinningFlags = new List<int>() { 21, 17, 13, 9, 5, 1 };
             Random random = new Random();
 
@@ -82,11 +81,7 @@ namespace FlagsRemoval1
                 if (remainingFlags > i)
                     return remainingFlags - i <= 3 ? remainingFlags - i : random.Next(1, 3);
 
-
-
             return random.Next(1, 3);
-
-
         }
     }
 }
