@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlagsRemoval1", "FlagsRemoval1\FlagsRemoval1.csproj", "{A6FE4BB1-09FE-49B8-AC39-7DF8995B4C32}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "FlagsRemoval2", "FlagsRemoval2\FlagsRemoval2.vbproj", "{0A38526D-AB69-4659-9C04-DA4788A3ECEE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{A6FE4BB1-09FE-49B8-AC39-7DF8995B4C32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6FE4BB1-09FE-49B8-AC39-7DF8995B4C32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6FE4BB1-09FE-49B8-AC39-7DF8995B4C32}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A38526D-AB69-4659-9C04-DA4788A3ECEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A38526D-AB69-4659-9C04-DA4788A3ECEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A38526D-AB69-4659-9C04-DA4788A3ECEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A38526D-AB69-4659-9C04-DA4788A3ECEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
