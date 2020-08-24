@@ -32,14 +32,14 @@ namespace FlagsRemoval1
                     }
 
                 }
-                while (pulledFlag > 3 || pulledFlag < 0 || !int.TryParse(input, out pulledFlag));
+                while (pulledFlag > 3 || pulledFlag <= 0 || !int.TryParse(input, out pulledFlag));
 
                 string flagspulled = pulledFlag == 1 ? "flag" : "flags";
 
 
                 totalFlags -= pulledFlag;
                 string totalflagsremaining = totalFlags == 1 ? "flag" : "flags";
-                WriteLine("You have pull {0} {1}, remaining {2} {3}", pulledFlag, flagspulled, totalFlags, totalflagsremaining);
+                WriteLine("You have pulled {0} {1}, remaining {2} {3}", pulledFlag, flagspulled, totalFlags, totalflagsremaining);
 
 
                 if (totalFlags == 1)
