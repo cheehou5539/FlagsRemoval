@@ -9,7 +9,7 @@ namespace FlagsRemoval1
     {
         static void Main(string[] args)
         {
-            int totalFlags = 22;
+            int totalFlags = 21;
             WriteLine("Game start by having {0} flags", totalFlags);
 
             do
