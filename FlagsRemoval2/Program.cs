@@ -47,15 +47,15 @@ namespace FlagsRemoval2
                 {
                     case 1:
                         gameEndFlag = 1;
-                        removeFlagAIdeleg = LastFlagLose;//assign LastFlagLose function to delegate
+                        removeFlagAIdeleg = LastFlagLoss;//assign LastFlagLossLastFlagLoss function to delegate
                         break;
                     case 2:
                         gameEndFlag = 0;
-                        removeFlagAIdeleg = NoFlagLose;//assign NoFlagLose function to delegate
+                        removeFlagAIdeleg = NoFlagLoss;//assign NoFlagLoss function to delegate
                         break;
                     case 3:
                         gameEndFlag = 5;
-                        removeFlagAIdeleg = Last5FlagLose;//assign Last5FlagLose function to delegate
+                        removeFlagAIdeleg = Last5FlagLoss;//assign Last5FlagLoss function to delegate
                         break;
                     default:
                         break;
@@ -108,12 +108,14 @@ namespace FlagsRemoval2
                 if (humanWon)
                 {
                     WriteLine("Game Ended! Good Job, you beat the computer! You are a good strategist!!!");
+                    WriteLine();
                 }
                 else
                 {
                     WriteLine("Game Ended! You were beaten by computer! You sucks!");
+                    WriteLine();
                 }
-                
+                WriteLine("Play Again?");
             } while (game != 99 || !int.TryParse(input, out _));
 
             ReadLine();
@@ -168,9 +170,9 @@ namespace FlagsRemoval2
         {
             WriteLine("Select your game: ");
             WriteLine("--------------------------------------------------------------------------------");
-            WriteLine("Press 1 for 21 flags game. Remove 1-3 flags each turn, LAST flag remaining lose the game: ");
-            WriteLine("Press 2 for 21 flags game. Remove 1-3 flags each turn, NO flag remaining lose the game: ");
-            WriteLine("Press 3 for 21 flags game. Remove 1-3 flags each turn, 5 or LESS flag remaining lose the game: ");
+            WriteLine("Press 1 for 21 flags game. Remove 1-3 flags each turn, LAST flag remaining loss the game: ");
+            WriteLine("Press 2 for 21 flags game. Remove 1-3 flags each turn, NO flag remaining loss the game: ");
+            WriteLine("Press 3 for 21 flags game. Remove 1-3 flags each turn, 5 or LESS flag remaining loss the game: ");
             WriteLine("Press 99 to exit the game");
             WriteLine("--------------------------------------------------------------------------------");
 
@@ -198,12 +200,12 @@ namespace FlagsRemoval2
           
         }
 
-        static int LastFlagLose(int remainingFlags)
+        static int LastFlagLoss(int remainingFlags)
         {
-            List<int> LosingFlgas = new List<int>() { 21, 17, 13, 9, 5, 1 };
+            List<int> LosingFlags = new List<int>() { 21, 17, 13, 9, 5, 1 };
             Random random = new Random();
 
-            foreach (int i in LosingFlgas)
+            foreach (int i in LosingFlags)
                 if (remainingFlags > i)
                     return remainingFlags - i <= 3 ? remainingFlags - i : random.Next(1, 3);
 
@@ -211,12 +213,12 @@ namespace FlagsRemoval2
 
         }
 
-        static int NoFlagLose(int remainingFlags)
+        static int NoFlagLoss(int remainingFlags)
         {
-            List<int> LosingFlgas = new List<int>() { 20, 16, 12, 8, 4, 0 };
+            List<int> LosingFlags = new List<int>() { 20, 16, 12, 8, 4, 0 };
             Random random = new Random();
 
-            foreach (int i in LosingFlgas)
+            foreach (int i in LosingFlags)
                 if (remainingFlags > i)
                     return remainingFlags - i <= 3 ? remainingFlags - i : random.Next(1, 3);
 
@@ -224,12 +226,12 @@ namespace FlagsRemoval2
 
         }
 
-        static int Last5FlagLose(int remainingFlags)
+        static int Last5FlagLoss(int remainingFlags)
         {
-            List<int> LosingFlgas = new List<int>() { 17, 13, 9, 5 };
+            List<int> LosingFlags = new List<int>() { 17, 13, 9, 5 };
             Random random = new Random();
 
-            foreach (int i in LosingFlgas)
+            foreach (int i in LosingFlags)
                 if (remainingFlags > i)
                     return remainingFlags - i <= 3 ? remainingFlags - i : random.Next(1, 3);
 
