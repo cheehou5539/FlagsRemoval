@@ -13,7 +13,7 @@ namespace FlagsRemoval1
             WriteLine("Game start by having {0} flags", totalFlags);
 
             do
-            {//second commit test
+            {
 
                 string input;
                 int pulledFlag;
