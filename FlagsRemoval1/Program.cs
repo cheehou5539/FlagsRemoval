@@ -22,7 +22,7 @@ namespace FlagsRemoval1
                     WriteLine("Remaining Flags: {0}", totalFlags);
                     WriteLine("Your turn, enter the number of flag(s) that you willing to pull (1-3 flags only).");
                     //
-                    input = Console.ReadLine();
+                    input = ReadLine();
 
 
 
@@ -71,6 +71,10 @@ namespace FlagsRemoval1
 
             ReadLine();
         }
+
+
+
+                  
 
         private static int AIPulledFlag(int remainingFlags)
         {
