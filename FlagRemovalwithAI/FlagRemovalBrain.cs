@@ -24,6 +24,7 @@ namespace FlagRemovalwithAI
         public bool UpperHandIfStartFirst { get; set; }
 
         public int WinningCondition { get; set; }
+
         public bool IsConsecutive { get; set; }
 
         public override string ToString()
@@ -32,7 +33,6 @@ namespace FlagRemovalwithAI
             string upperHand = UpperHandIfStartFirst ? "First" : "Later";
             str += string.Join(", ", LosingStateFlagsNum.Select(i => i)) + Environment.NewLine;
             str += "Upper Hand if start: " + upperHand + Environment.NewLine;
-
 
             return str;
         }
