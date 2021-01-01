@@ -9,77 +9,108 @@ namespace FlagRemovalwithAI
 {
     public class Program
     {
-        static List<int> FlagsToRemove = new List<int> { 1, 2, 3 };
-        const int STARTING_FLAGS = 21;
-        const int WINNING_CONDITION = 1;
+
 
 
 
         static void Main(string[] args)
         {
-            FlagRemovalBrain brain = new FlagRemovalBrain(WINNING_CONDITION, STARTING_FLAGS, FlagsToRemove);
-            GameStart(STARTING_FLAGS, WINNING_CONDITION, FlagsToRemove, brain, true);
-         
-        }
+            //  List<int> FLAGS_TO_REMOVED = new List<int> { 2, 7 };
+            int[] FLAGS_TO_REMOVED = new[] { 2, 7 };
 
+            const int STARTING_FLAGS = 21;
+            const int WINNING_CONDITION = 0;
 
-
-        internal static void GameStart(int STARTING_FLAGS, int WINNING_CONDITION, List<int> FlagsToRemove, FlagRemovalBrain brain, bool isHumanPlay)
-        {
-            PrintRules(STARTING_FLAGS, WINNING_CONDITION, FlagsToRemove);
+            PrintRules(STARTING_FLAGS, WINNING_CONDITION, FLAGS_TO_REMOVED);
             string playAgain = string.Empty;
-            string input;
+            string input = string.Empty;
+
             do
             {
-                int remainingFlags = STARTING_FLAGS;
-                int turn = 0;
-                bool humanWon = false;
-                List<ResultTable> ListOfResultTable = new List<ResultTable>();//keep track the result of each turn
-                do
-                {
-                    WriteLine("Your turn, enter the number of flag(s) that you willing to pull ({0} only).", string.Join(" or ", FlagsToRemove.Select(i => i)));
-                    input = ReadLine();
-
-                    if (!int.TryParse(input, out int pulledFlag) || !FlagsToRemove.Contains(pulledFlag))
-                    {
-                        WriteLine("Please enter number {0 } only", string.Join(" or ", FlagsToRemove.Select(i => i)));
-                        continue;
-                    }
-
-
-                    /**Human's turn  */
-                    (remainingFlags, turn) = ProcessDecision(remainingFlags, turn, pulledFlag, brain, ListOfResultTable, true); 
-                    if (remainingFlags <= WINNING_CONDITION)
-                    {
-                        humanWon = true; break;
-                    }
-                   
-
-                    /**Computer's turn  */
-                    (remainingFlags, turn) = ProcessDecision(remainingFlags, turn, pulledFlag, brain, ListOfResultTable, false);
-                    if (remainingFlags <= WINNING_CONDITION)
-                        break;
-                  
-
-                } while (remainingFlags > WINNING_CONDITION);
-
-                if (humanWon) 
-                    WriteLine("Game Ended! Good Job, you beat the computer! You are a good strategist!!! \n\n\n"); 
-                else 
-                    WriteLine("Game Ended! You were beaten by computer! You sucks! \n\n\n");
-                   
+                GameStart(STARTING_FLAGS, WINNING_CONDITION, FLAGS_TO_REMOVED, true);
                 WriteLine("Play Again? Y/N");
                 playAgain = ReadLine();
             }
             while (playAgain.ToUpper() != "N" || !int.TryParse(input, out _));
         }
 
-        internal static void PrintRules(int STARTING_FLAGS, int WINNING_CONDITION, List<int> FlagsToRemove)
+
+
+        internal static void GameStart(int STARTING_FLAGS, int WINNING_CONDITION, int[] arrayFlagsToRemoved, bool isHumanPlay)
+        {
+
+            // PrintRules(STARTING_FLAGS, WINNING_CONDITION, FLAGS_TO_REMOVED);
+            // string playAgain = string.Empty;
+            string input;
+            //do
+            //{
+
+            List<int> FlagsToRemove = arrayFlagsToRemoved.OfType<int>().ToList();
+
+            FlagRemovalBrain brain = new FlagRemovalBrain(WINNING_CONDITION, STARTING_FLAGS, FlagsToRemove);
+
+            int remainingFlags = STARTING_FLAGS;
+            int turn = 0;
+            bool humanWon = false;
+            bool draw = false;
+
+            List<ResultTable> ListOfResultTable = new List<ResultTable>();//keep track the result of each turn
+
+            do
+            {
+
+                WriteLine("Your turn, enter the number of flag(s) that you willing to pull ({0} only).", string.Join(" or ", FlagsToRemove.Select(i => i)));
+                input = ReadLine();
+
+                if (!int.TryParse(input, out int pulledFlag) || !FlagsToRemove.Contains(pulledFlag) || pulledFlag > remainingFlags)
+                {
+                    WriteLine("Please enter number {0 } only", string.Join(" or ", FlagsToRemove.Select(i => i)));
+                    continue;
+                }
+
+
+                /**Human's turn  */
+                (remainingFlags, turn) = ProcessDecision(remainingFlags, turn, pulledFlag, brain, ListOfResultTable, true);
+                if (remainingFlags <= WINNING_CONDITION)
+                { humanWon = true; break; }
+
+
+                brain.FlagsThatCanBeRemove.RemoveAll(t => t > remainingFlags);//remove availabe flags
+
+                if (brain.FlagsThatCanBeRemove.Count == 0)//draw
+                { draw = true; break; }
+
+                /**Computer's turn  */
+                (remainingFlags, turn) = ProcessDecision(remainingFlags, turn, pulledFlag, brain, ListOfResultTable, false);
+                if (remainingFlags <= WINNING_CONDITION) break;
+
+                FlagsToRemove.RemoveAll(t => t > remainingFlags);//remove availabe flags
+
+                if (FlagsToRemove.Count == 0)//draw
+                { draw = true; break; }
+
+
+            } while (remainingFlags > WINNING_CONDITION);
+
+            if (draw)
+                WriteLine("Game Ended! Draw. \n\n\n");
+            else if (humanWon)
+                WriteLine("Game Ended! Good Job, you beat the computer! You are a good strategist!!! \n\n\n");
+            else
+                WriteLine("Game Ended! You were beaten by computer! You sucks! \n\n\n");
+
+            //    WriteLine("Play Again? Y/N");
+            //    playAgain = ReadLine();
+            //}
+            //while (playAgain.ToUpper() != "N" || !int.TryParse(input, out _));
+        }
+
+        internal static void PrintRules(int STARTING_FLAGS, int WINNING_CONDITION, int[] FlagsToRemove)
         {
             Console.WriteLine("-----------------------------RULES-----------------------------");
             Console.WriteLine("Game starts by having {0} flags", STARTING_FLAGS);
             Console.WriteLine("Game will ends if remain {0} flag/s or less, player who have {0} flag/s or less during his/her turn consider lose ", WINNING_CONDITION);
-            Console.WriteLine("The amount of flags that can and have to be removed per turn are: "); 
+            Console.WriteLine("The amount of flags that can and have to be removed per turn are: ");
             Console.Write(string.Join(", ", FlagsToRemove.Select(i => i)));
             Console.WriteLine();
             Console.WriteLine("---------------------------------------------------------------");
@@ -95,13 +126,13 @@ namespace FlagRemovalwithAI
             public int Remaining { get; set; }
         }
 
-         static void DisplayResultTable(List<ResultTable> resultTables)
+        static void DisplayResultTable(List<ResultTable> resultTables)
         {
             var table = new ConsoleTable("Turn", "Move", "Flag/s Pulled", "Flag/s Remaining");
             foreach (ResultTable resultTable in resultTables)
-            { 
-                Clear(); 
-                table.AddRow(resultTable.Turn, resultTable.Move, resultTable.Pulled, resultTable.Remaining); 
+            {
+                Clear();
+                table.AddRow(resultTable.Turn, resultTable.Move, resultTable.Pulled, resultTable.Remaining);
                 WriteLine(table.ToStringAlternative());
                 WriteLine("{0} has pulled {1} {2}, remaining {3} {4} ", resultTable.Turn % 2 == 0 ? "Computer AI " : "You",
                            resultTable.Pulled, resultTable.Pulled > 1 ? "flags" : "flag", resultTable.Remaining, resultTable.Remaining > 1 ? "flags" : "flag");
@@ -109,7 +140,7 @@ namespace FlagRemovalwithAI
 
 
         }
-        
+
         static (int, int) ProcessDecision(int remainingFlags, int turn, int HumanPulledFlag, FlagRemovalBrain brain, List<ResultTable> resultTables, bool isHumanTurn)
         {
             if (isHumanTurn)
@@ -123,7 +154,7 @@ namespace FlagRemovalwithAI
             {
                 Turn = ++turn,
                 Move = turn % 2 == 0 ? "AI " : "You",
-                Pulled = isHumanTurn ? HumanPulledFlag : brain.PulledFlagDecision(remainingFlags)
+                Pulled = isHumanTurn ? HumanPulledFlag : brain.ComputerDecision(remainingFlags)
             };
             resultTable.Remaining = remainingFlags - resultTable.Pulled;
 
