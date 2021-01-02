@@ -12,7 +12,10 @@ namespace FlagRemovalwithAI
             IsConsecutive = !_FlagsThatCanBeRemove.Select((i, j) => i - j).Distinct().Skip(1).Any();
             FlagsThatCanBeRemove = _FlagsThatCanBeRemove;
             WinningCondition = _WinningCondition;
+            IsCommonMultiple = !IsConsecutive && IfRemoveableContainCommonMultiple(FlagsThatCanBeRemove);
             (LosingStateFlagsNum, UpperHandIfStartFirst) = UpperHandAnalysis(IsConsecutive, StartingFlags);
+
+            Console.WriteLine("Upper hand if {0}", UpperHandIfStartFirst ? "Start First" : "Start Second");
         }
 
         public List<int> FlagsThatCanBeRemove { get; set; }
@@ -24,6 +27,7 @@ namespace FlagRemovalwithAI
         public int WinningCondition { get; set; }
 
         public bool IsConsecutive { get; set; }
+        public bool IsCommonMultiple { get; set; }
 
         public override string ToString()
         {
@@ -44,7 +48,7 @@ namespace FlagRemovalwithAI
             }
             else
             {
-                return (new List<int>(), true);
+                return WiningStrategyForNonConsecutive(WinningCondition, StartingFlags);
             }
         }
 
@@ -99,8 +103,9 @@ namespace FlagRemovalwithAI
 
         public int PulledFlagDecisionNonConsecutive(List<List<int>> ListOfArrays, out bool upperhandStartFirst)
         {
-            ListOfArrays.Sort((a, b) => a.Count - b.Count);
- 
+            //ListOfArrays.Sort((a, b) => a.Count - b.Count);
+
+           
             List<int> WinningSelection = new List<int>();
             List<int> LosingSelection = new List<int>();
 
@@ -151,7 +156,6 @@ namespace FlagRemovalwithAI
             else
             {
                 Random random = new Random();
-                //return random.Next(FlagsThatCanBeRemove[FlagsThatCanBeRemove.Count]);
                 return FlagsThatCanBeRemove[random.Next(0, FlagsThatCanBeRemove.Count)]; 
             } 
         }
@@ -169,7 +173,12 @@ namespace FlagRemovalwithAI
                 {
                     arr.Add(i);
                 }
-             
+
+
+                if (IsCommonMultiple)
+                    SumTwoAdjacent(arr, FlagsThatCanBeRemove, out arr);
+
+
                 ListOfArrays.Add(arr);
             }
 
@@ -228,5 +237,42 @@ namespace FlagRemovalwithAI
             return pulledFlag;
 
         }
+
+
+        public bool IfRemoveableContainCommonMultiple(List<int> FlagsThatCanBeRemove)
+        {
+            FlagsThatCanBeRemove.Reverse();
+            for (int i = 0; i < FlagsThatCanBeRemove.Count-1; i++) 
+                if (FlagsThatCanBeRemove[i] % FlagsThatCanBeRemove[i + 1] == 0) 
+                    return true;
+              
+ 
+            return false;
+        }
+        public List<int> SumTwoAdjacent(List<int> arr, List<int> ListToRemoved, out List<int> afterAdjustment)
+        {
+
+            bool gotAdjIdentical = false;
+            List<int> NewArr = new List<int>();
+            for (int i = 0; i < arr.Count; i++)
+            {
+                if (i < arr.Count - 1 && arr[i] == arr[i + 1] && ListToRemoved.Contains(arr[i] + arr[i + 1]))
+                {
+                    gotAdjIdentical = true;
+                    NewArr.Add(arr[i] + arr[i + 1]);
+                    i += 1;
+                    continue;
+
+                }
+                NewArr.Add(arr[i]); 
+            }
+            afterAdjustment = NewArr;
+            if (gotAdjIdentical)
+            {
+                SumTwoAdjacent(NewArr, ListToRemoved, out afterAdjustment);
+            }
+            return afterAdjustment;
+        }
+
     }
 }
