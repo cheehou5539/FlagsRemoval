@@ -63,8 +63,7 @@ namespace FlagRemovalwithAI
             bool upperHandIfStartFirst = LosingStateFlagsNum.Max() != StartingFlags;
             return (LosingStateFlagsNum, upperHandIfStartFirst);
         }
-
-
+         
 
         public int ComputerDecision(int remainingFlags)
         {
@@ -80,19 +79,58 @@ namespace FlagRemovalwithAI
         public int PulledFlagDecisionNonConsecutive(List<List<int>> ListOfArrays)
         {
             ListOfArrays.Sort((a, b) => a.Count - b.Count);
+ 
+            List<int> WinningSelection = new List<int>();
+            List<int> LosingSelection = new List<int>();
 
             foreach (List<int> list in ListOfArrays)
+            {
                 if (list.Count() % 2 != 0)
-                    return list[list.Count - 1];
+                {
+                    if (!WinningSelection.Contains(list[list.Count - 1]))
+                        WinningSelection.Add(list[list.Count - 1]);
+                }
+                else
+                {
+                    if (!LosingSelection.Contains(list[list.Count - 1]))
+                        LosingSelection.Add(list[list.Count - 1]);
+                }
 
 
-            //randomly pulled flag if solution not found
-            Random random = new Random();
-            int index = random.Next(FlagsThatCanBeRemove.Count);
-            return FlagsThatCanBeRemove[index];
+                if (WinningSelection.Count == FlagsThatCanBeRemove.Count && LosingSelection.Count == FlagsThatCanBeRemove.Count)
+                    break;
+            }
 
+
+            List<int> uniqueList = WinningSelection.Except(LosingSelection).ToList();
+
+            if(uniqueList.Count>0)
+            {
+                uniqueList.Sort();
+                return uniqueList[uniqueList.Count - 1];
+            }
+            else
+            {
+               return ForceStaleMate(LosingSelection);
+            } 
         }
 
+
+        public int ForceStaleMate(List<int> LosingSelection )
+        {
+
+           List<int> StaleMateList =  FlagsThatCanBeRemove.Except(LosingSelection).ToList();
+            if (StaleMateList.Count > 0)
+            {
+                StaleMateList.Sort();
+                return StaleMateList[StaleMateList.Count - 1];
+            }
+            else
+            {
+                Random random = new Random();
+                return random.Next(FlagsThatCanBeRemove.Count);
+            } 
+        }
 
         public List<List<int>> GenarateAllPaths(int remainingFlagsToEnd)
         {
@@ -102,12 +140,12 @@ namespace FlagRemovalwithAI
             foreach (IEnumerable<int> nums in Combinations(remainingFlagsToEnd))
             {
                 List<int> arr = new List<int>();
+             
                 foreach (int i in nums)
                 {
                     arr.Add(i);
                 }
-
-                arr.Sort();
+             
                 ListOfArrays.Add(arr);
             }
 

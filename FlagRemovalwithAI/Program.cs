@@ -12,9 +12,9 @@ namespace FlagRemovalwithAI
 
         static void Main(string[] args)
         {
-            int[] FLAGS_TO_REMOVED = new[] { 3,4 };
+            int[] FLAGS_TO_REMOVED = new[] { 3,6,7 };
 
-            const int STARTING_FLAGS = 21;
+            const int STARTING_FLAGS = 14;
             const int WINNING_CONDITION = 1;
 
             PrintRules(STARTING_FLAGS, WINNING_CONDITION, FLAGS_TO_REMOVED);
@@ -65,20 +65,20 @@ namespace FlagRemovalwithAI
 
                 /**Human's turn  */
                 (remainingFlags, turn) = ProcessDecision(remainingFlags, turn, pulledFlag, brain, ListOfResultTable, true);
-                if (remainingFlags <= WINNING_CONDITION)
+                if (remainingFlags == WINNING_CONDITION)
                 { humanWon = true; break; }
 
 
-                brain.FlagsThatCanBeRemove.RemoveAll(t => t > remainingFlags);//remove availabe flags
+                brain.FlagsThatCanBeRemove.RemoveAll(t =>  remainingFlags-t < WINNING_CONDITION);//remove availabe flags
 
                 if (brain.FlagsThatCanBeRemove.Count == 0)//draw
                 { draw = true; break; }
 
                 /**Computer's turn  */
                 (remainingFlags, turn) = ProcessDecision(remainingFlags, turn, pulledFlag, brain, ListOfResultTable, false);
-                if (remainingFlags <= WINNING_CONDITION) break;
+                if (remainingFlags == WINNING_CONDITION) break;
 
-                FlagsToRemove.RemoveAll(t => t > remainingFlags);//remove availabe flags
+                FlagsToRemove.RemoveAll(t =>  remainingFlags-t < WINNING_CONDITION);//remove availabe flags
 
                 if (FlagsToRemove.Count == 0)//draw
                 { draw = true; break; }
