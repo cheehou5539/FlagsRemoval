@@ -9,17 +9,15 @@ namespace FlagRemovalwithAI
     {
         public FlagRemovalBrain(int _WinningCondition, int StartingFlags, List<int> _FlagsThatCanBeRemove)
         {
-
+            IsConsecutive = !_FlagsThatCanBeRemove.Select((i, j) => i - j).Distinct().Skip(1).Any();
             FlagsThatCanBeRemove = _FlagsThatCanBeRemove;
             WinningCondition = _WinningCondition;
-            (LosingStateFlagsNum, UpperHandIfStartFirst) = GenerateWiningStrategy(_WinningCondition, StartingFlags, _FlagsThatCanBeRemove);
-            IsConsecutive = !_FlagsThatCanBeRemove.Select((i, j) => i - j).Distinct().Skip(1).Any();
-
+            (LosingStateFlagsNum, UpperHandIfStartFirst) = UpperHandAnalysis(IsConsecutive, StartingFlags);
         }
 
         public List<int> FlagsThatCanBeRemove { get; set; }
 
-        public List<int> LosingStateFlagsNum { get; set; }
+        public List<int> LosingStateFlagsNum { get; set; }//for consecutive situation only
 
         public bool UpperHandIfStartFirst { get; set; }
 
@@ -38,8 +36,21 @@ namespace FlagRemovalwithAI
         }
 
 
-        public (List<int>, bool) GenerateWiningStrategy(int WinningCondition, int StartingFlags, IEnumerable<int> FlagsThatCanBeRemove)
+        public (List<int>, bool) UpperHandAnalysis(bool IsConsecutive,int StartingFlags)
         {
+            if(IsConsecutive)
+            {
+                return WiningStrategyForConsecutive(WinningCondition, StartingFlags, FlagsThatCanBeRemove);
+            }
+            else
+            {
+                return (new List<int>(), true);
+            }
+        }
+
+        public (List<int>, bool) WiningStrategyForConsecutive(int WinningCondition, int StartingFlags, IEnumerable<int> FlagsThatCanBeRemove)
+        {
+
             List<int> LosingStateFlagsNum = new List<int>();
 
             for (int i = WinningCondition; i <= StartingFlags; i++)
@@ -63,20 +74,30 @@ namespace FlagRemovalwithAI
             bool upperHandIfStartFirst = LosingStateFlagsNum.Max() != StartingFlags;
             return (LosingStateFlagsNum, upperHandIfStartFirst);
         }
-         
 
-        public int ComputerDecision(int remainingFlags)
+
+        public (List<int>, bool) WiningStrategyForNonConsecutive(int WinningCondition, int StartingFlags)
         {
+            ComputerDecision(StartingFlags - WinningCondition, out bool upperHandIfStartFirst);
+            return (new List<int>(), upperHandIfStartFirst);
+        }
+
+        public int ComputerDecision(int remainingFlags, out bool upperHandIfStartFirst)
+        {
+            upperHandIfStartFirst = false;
             if (IsConsecutive)
+            { 
                 return PulledFlagDecisionConsecutive(remainingFlags);
-
-            List<List<int>> ListOfPaths = GenarateAllPaths(remainingFlags - WinningCondition);
-            return PulledFlagDecisionNonConsecutive(ListOfPaths);
-
+            }
+            else
+            {
+                List<List<int>> ListOfPaths = GenarateAllPaths(remainingFlags - WinningCondition);
+                return PulledFlagDecisionNonConsecutive(ListOfPaths, out upperHandIfStartFirst);
+            } 
         }
 
 
-        public int PulledFlagDecisionNonConsecutive(List<List<int>> ListOfArrays)
+        public int PulledFlagDecisionNonConsecutive(List<List<int>> ListOfArrays, out bool upperhandStartFirst)
         {
             ListOfArrays.Sort((a, b) => a.Count - b.Count);
  
@@ -106,11 +127,13 @@ namespace FlagRemovalwithAI
 
             if(uniqueList.Count>0)
             {
+                upperhandStartFirst = true;
                 uniqueList.Sort();
                 return uniqueList[uniqueList.Count - 1];
             }
             else
             {
+                upperhandStartFirst = false;
                return ForceStaleMate(LosingSelection);
             } 
         }
@@ -128,7 +151,8 @@ namespace FlagRemovalwithAI
             else
             {
                 Random random = new Random();
-                return random.Next(FlagsThatCanBeRemove.Count);
+                //return random.Next(FlagsThatCanBeRemove[FlagsThatCanBeRemove.Count]);
+                return FlagsThatCanBeRemove[random.Next(0, FlagsThatCanBeRemove.Count)]; 
             } 
         }
 
@@ -180,7 +204,7 @@ namespace FlagRemovalwithAI
 
         public int PulledFlagDecisionConsecutive(int remainingFlags)
         {
-            int pulledFlag = -1;
+            int pulledFlag = 0;
             var remainingLosingStateFlagsNum = LosingStateFlagsNum.Where(x => x < remainingFlags).ToList();
 
             foreach (int item in remainingLosingStateFlagsNum)
@@ -194,7 +218,7 @@ namespace FlagRemovalwithAI
 
             }
 
-            if (pulledFlag == -1)
+            if (pulledFlag == 0)
             {
                 Random random = new Random();
                 int index = random.Next(FlagsThatCanBeRemove.Count);

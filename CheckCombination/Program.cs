@@ -8,43 +8,43 @@ namespace CheckCombination
 {
     class Program
     {
+       static List<int> list = new List<int>() { 2,7 };
+        static int targetNum = 20;
         static void Main(string[] args)
         {
             List<List<int>> ListOfArrays = new List<List<int>>();
             int c = 0;
-            foreach (IEnumerable<int> nums in Combinations(20))
+            foreach (IEnumerable<int> nums in Combinations(targetNum))
             {
                 List<int> arr = new List<int>();
-                foreach (int i in nums)
+                foreach (var item in nums)
                 {
-                    arr.Add(i);
-                    Console.Write(i + ", ");
-
+                    arr.Add(item);
                 }
-                c++;
-                arr.Sort();
-                ListOfArrays.Add(arr);
-
-                Console.WriteLine();
+                
+                c++; 
+                ListOfArrays.Add(arr); 
             }
-            SelectPulledFlag(ListOfArrays);
-            //  Console.WriteLine(c);
+            Console.WriteLine("Total permutation: {0}", c);
+            PrintPermutation(ListOfArrays);
             Console.ReadLine();
         }
-        static int SelectPulledFlag(List<List<int>> ListOfArrays)
+
+       static void PrintPermutation(List<List<int>> ListOfArrays)
         {
-            ListOfArrays.Sort((a, b) => a.Count - b.Count);
-
-            foreach (List<int> list in ListOfArrays)
-                if (list.Count() % 2 != 0)
-                    return list[list.Count - 1];
-
-            return -1;
+            foreach (List<int> arrays in ListOfArrays)
+            {
+                foreach (int num in arrays)
+                {
+                    Console.Write(num + ", ");
+                }
+                Console.WriteLine();
+            }
         }
 
         static IEnumerable<List<int>> Combinations(int n)
         {
-            List<int> list = new List<int>() { 3, 6, 7 };
+         
             if (n < 0)
             {
                 yield break;
