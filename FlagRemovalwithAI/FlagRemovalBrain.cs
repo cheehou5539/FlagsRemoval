@@ -27,6 +27,7 @@ namespace FlagRemovalwithAI
         public int WinningCondition { get; set; }
 
         public bool IsConsecutive { get; set; }
+
         public bool IsCommonMultiple { get; set; }
 
         public override string ToString()
@@ -105,13 +106,12 @@ namespace FlagRemovalwithAI
         {
             //ListOfArrays.Sort((a, b) => a.Count - b.Count);
 
-           
             List<int> WinningSelection = new List<int>();
             List<int> LosingSelection = new List<int>();
 
             foreach (List<int> list in ListOfArrays)
             {
-                if (list.Count() % 2 != 0)
+                if (list.Count() % 2 != 0)//get odd Count of list of integer
                 {
                     if (!WinningSelection.Contains(list[list.Count - 1]))
                         WinningSelection.Add(list[list.Count - 1]);
@@ -128,7 +128,7 @@ namespace FlagRemovalwithAI
             }
 
 
-            List<int> uniqueList = WinningSelection.Except(LosingSelection).ToList();
+            List<int> uniqueList = WinningSelection.Except(LosingSelection).ToList();//get unique last digit
 
             if(uniqueList.Count>0)
             {
@@ -138,7 +138,7 @@ namespace FlagRemovalwithAI
             }
             else
             {
-                upperhandStartFirst = false;
+               upperhandStartFirst = false;
                return ForceStaleMate(LosingSelection);
             } 
         }
@@ -154,7 +154,8 @@ namespace FlagRemovalwithAI
                 return StaleMateList[StaleMateList.Count - 1];
             }
             else
-            {
+            {  //will lose anyway no matter choose what
+                //only hope the opponent make a mistake in their turn
                 Random random = new Random();
                 return FlagsThatCanBeRemove[random.Next(0, FlagsThatCanBeRemove.Count)]; 
             } 

@@ -8,11 +8,12 @@ namespace CheckCombination
 {
     class Program
     {
-       static List<int> list = new List<int>() { 2,7 };
-        static int targetNum = 20;
+       static List<int> list = new List<int>() {2,5,7 };
+        static int targetNum = 8;
         static void Main(string[] args)
         {
             List<List<int>> ListOfArrays = new List<List<int>>();
+            List<int> afterAdjustment = new List<int>();
             int c = 0;
             foreach (IEnumerable<int> nums in Combinations(targetNum))
             {
@@ -23,10 +24,15 @@ namespace CheckCombination
                 }
                 
                 c++; 
+
                 ListOfArrays.Add(arr); 
             }
+            Console.WriteLine("Target Sum Number: {0}", targetNum);
             Console.WriteLine("Total permutation: {0}", c);
             PrintPermutation(ListOfArrays);
+
+           
+
             Console.ReadLine();
         }
 
@@ -64,6 +70,31 @@ namespace CheckCombination
                 }
 
             }
+        }
+
+        public List<int> SumTwoAdjacent(List<int> arr, List<int> ListToRemoved, out List<int> afterAdjustment)
+        {
+
+            bool gotAdjIdentical = false;
+            List<int> NewArr = new List<int>();
+            for (int i = 0; i < arr.Count; i++)
+            {
+                if (i < arr.Count - 1 && arr[i] == arr[i + 1] && ListToRemoved.Contains(arr[i] + arr[i + 1]))
+                {
+                    gotAdjIdentical = true;
+                    NewArr.Add(arr[i] + arr[i + 1]);
+                    i += 1;
+                    continue;
+
+                }
+                NewArr.Add(arr[i]);
+            }
+            afterAdjustment = NewArr;
+            if (gotAdjIdentical)
+            {
+                SumTwoAdjacent(NewArr, ListToRemoved, out afterAdjustment);
+            }
+            return afterAdjustment;
         }
     }
 }
